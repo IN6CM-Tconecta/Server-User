@@ -6,10 +6,10 @@ import { calculateDistance, estimateTravelTime } from '../utils/geo-utils.js';
 
 const STANDARD_FARE = 1.00; 
 
-export const planTour = async (req, res) => {
+    export const planTour = async (req, res) => {
     try {
         const userId = req.user?.id || req.body.userId;
-        const { originLat, originLon, destLat, destLon, systemType = "TRANSMETRO" } = req.body;
+        const { originLat, originLon, destLat, destLon, systemType = "TRANSMETRO", itinerary = "", originName = "Origen", destName = "Destino" } = req.body;
 
         let wallet = await Wallet.findOne({ userId, isActive: true });
         if (!wallet) {
@@ -50,6 +50,10 @@ export const planTour = async (req, res) => {
             distanciaMetros: distanceMeters,
             tiempoEstimadoMinutos: estimatedTime,
             tarifaCobrada: fare,
+            systemType: systemType.toUpperCase(),
+            itinerary,
+            originName,
+            destName,
             status: true,
             isActive: true
         });

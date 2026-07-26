@@ -27,6 +27,22 @@ const tourSchema = new mongoose.Schema(
             required: true,
             default: 1.00
         },
+        systemType: {
+            type: String,
+            default: 'TRANSMETRO'
+        },
+        itinerary: {
+            type: String,
+            default: ''
+        },
+        originName: {
+            type: String,
+            default: 'Origen'
+        },
+        destName: {
+            type: String,
+            default: 'Destino'
+        },
         status: {
             type: Boolean,
             default: true
