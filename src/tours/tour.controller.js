@@ -43,6 +43,14 @@ const STANDARD_FARE = 1.00;
         wallet.saldo -= fare;
         await wallet.save();
 
+        const distanceKm = (distanceMeters / 1000).toFixed(2);
+        let computedItinerary = `Tramo Directo Transmetro (${distanceKm} km)`;
+        if (distanceMeters > 5000) {
+            computedItinerary = `Ruta Multimodal: Alimentador TuBus Barrio -> Transbordo Estación Troncal Transmetro (${distanceKm} km)`;
+        } else if (systemType.toUpperCase() === "TRANSURBANO") {
+            computedItinerary = `Ruta Periférica Transurbano (${distanceKm} km)`;
+        }
+
         const newTour = new Tour({
             userId,
             origen: { lat: originLat, lon: originLon },
@@ -51,7 +59,7 @@ const STANDARD_FARE = 1.00;
             tiempoEstimadoMinutos: estimatedTime,
             tarifaCobrada: fare,
             systemType: systemType.toUpperCase(),
-            itinerary,
+            itinerary: computedItinerary,
             originName,
             destName,
             status: true,
@@ -59,14 +67,6 @@ const STANDARD_FARE = 1.00;
         });
 
         await newTour.save();
-
-        const distanceKm = (distanceMeters / 1000).toFixed(2);
-        let itinerary = `Tramo Directo Transmetro (${distanceKm} km)`;
-        if (distanceMeters > 5000) {
-            itinerary = `Ruta Multimodal: Alimentador TuBus Barrio -> Transbordo Estación Troncal Transmetro (${distanceKm} km)`;
-        } else if (systemType.toUpperCase() === "TRANSURBANO") {
-            itinerary = `Ruta Periférica Transurbano (${distanceKm} km)`;
-        }
 
         res.status(200).json({
             success: true,
@@ -78,7 +78,7 @@ const STANDARD_FARE = 1.00;
                 estimatedTime: `${estimatedTime} minutos`,
                 chargedFare: `Q${fare.toFixed(2)}`,
                 remainingBalance: `Q${wallet.saldo.toFixed(2)}`,
-                itinerary
+                itinerary: computedItinerary
             },
             warning 
         });
