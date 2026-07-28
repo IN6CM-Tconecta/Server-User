@@ -14,4 +14,16 @@ process.on('unhandledRejection', (reason, promise) => {
 });
 
 console.log(`Iniciando servidor de TRANSMETRO-CONECTA USUARIO...`);
-initServer();
+
+import { app } from './configs/app.js';
+import { dbConnection } from './configs/db.js';
+
+// Si estamos en Vercel, iniciamos la DB (sin bloquear el export) y exportamos la app
+if (process.env.VERCEL) {
+    dbConnection();
+} else {
+    // Modo local
+    initServer();
+}
+
+export default app;

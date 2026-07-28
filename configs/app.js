@@ -25,31 +25,32 @@ const routes = (app) => {
     app.use(`${BASE_URL}/profiles`, profileRoutes);
 };
 
-const initServer = async () => {
-    const app = express();
-    const PORT = process.env.PORT || 3003;
+const app = express();
+const BASE_URL = '/TRANSMETRO-CONECTA-USUARIO/v1';
 
+// Vercel Serverless: Configuración síncrona
+middlewares(app);
+routes(app);
+
+app.get(`${BASE_URL}/health`, (req, res) => {
+    res.status(200).json({
+        status: 'ok',
+        service: 'TRANSMETRO-CONECTA Usuario',
+        version: '1.0.0'
+    });
+});
+
+const initServer = async () => {
+    const PORT = process.env.PORT || 3003;
     try {
         await dbConnection();
-        middlewares(app);
-        routes(app);
-
-        app.get(`${BASE_URL}/health`, (req, res) => {
-            res.status(200).json({
-                status: 'ok',
-                service: 'TRANSMETRO-CONECTA Usuario',
-                version: '1.0.0'
-            });
-        });
-
         app.listen(PORT, () => {
             console.log(`Servidor de usuario corriendo en el puerto ${PORT}`);
             console.log(`Base URL: http://localhost:${PORT}${BASE_URL}`);
         });
-
     } catch (error) {
         console.log('Error al iniciar servidor de usuario:', error);
     }
 };
 
-export { initServer };
+export { app, initServer };
