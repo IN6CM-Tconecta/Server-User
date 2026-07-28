@@ -26,7 +26,6 @@ const routes = (app) => {
 };
 
 const app = express();
-const BASE_URL = '/TRANSMETRO-CONECTA-USUARIO/v1';
 
 // Vercel Serverless: Configuración síncrona
 middlewares(app);
